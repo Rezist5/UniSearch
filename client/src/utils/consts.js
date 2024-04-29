@@ -1,0 +1,7 @@
+export const ADMIN_ROUTE = '/admin'
+export const REPRESENTATIVE_ROUTE = '/representative'
+export const LOGIN_ROUTE = '/login'
+export const REGISTRATION_ROUTE = '/registration'
+export const MAIN_ROUTE = '/'
+export const PORTFOLIO_ROUTE = '/portfolio'
+export const UNIVERSITY_ROUTE = '/university'
