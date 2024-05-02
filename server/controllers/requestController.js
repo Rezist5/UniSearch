@@ -4,7 +4,7 @@ class RequestController {
     async sendRequest(req, res, next) {
         try {
             const { universityId, description } = req.body;
-            const userId = req.userData.id; // Получаем идентификатор пользователя из данных аутентификации
+            const userId = req.userData.id; 
     
             if (!universityId || !description) {
                 return next(ApiError.badRequest('Некорректные данные'));
@@ -52,7 +52,6 @@ class RequestController {
 
     async getAllRequests(req, res, next) {
         try {
-            // Получаем идентификатор текущего пользователя из данных, полученных через middleware аутентификации
             const userId = req.userData.id;
     
             // Получаем параметры фильтрации из запроса

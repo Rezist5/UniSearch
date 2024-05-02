@@ -4,9 +4,9 @@ const reviewController = require('../controllers/ReviewController');
 const authMiddleware = require('../middleware/authMiddleware');
 
 // Маршрут для создания отзыва
-router.post('/reviews', authMiddleware, reviewController.create);
+router.post('/', authMiddleware, reviewController.create);
 
 // Маршрут для получения всех отзывов для указанного университета с возможностью сортировки
-router.get('/reviews/:universityId/:direction', reviewController.getAllReviewsByUniversityId);
+router.get('/:universityId', reviewController.getAllReviewsByUniversityId);
 
 module.exports = router;

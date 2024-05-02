@@ -20,19 +20,19 @@ export const check = async () => {
 }
 
 export const createAdmin = async () => {
-    const {data} = await $authHost.get('api/user/createAdmin' , {email, password, role: 'ADMIN'})//DODELAT
+    const {data} = await $authHost.post('api/user/createAdmin' , {email, password, role: 'ADMIN'})//DODELAT
     localStorage.setItem('token', data.token)
     return jwt_decode(data.token)
 }
 
 export const createRepresentative = async () => {
-    const {data} = await $authHost.get('api/user/createRepresentative', {email, password, role: 'REPRESENTATIVE'} )//DODELAT
+    const {data} = await $authHost.post('api/user/createRepresentative', {email, password, role: 'REPRESENTATIVE'} )//DODELAT
     localStorage.setItem('token', data.token)
     return jwt_decode(data.token)
 }
 
 export const logout = async () => {
-    const {data} = await $authHost.get('api/user/logout')
+    const {data} = await $authHost.post('api/user/logout')
     localStorage.setItem('token', data.token)
     return jwt_decode(data.token)
 }

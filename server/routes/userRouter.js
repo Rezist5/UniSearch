@@ -14,4 +14,11 @@ router.get('/check', UserController.check);
 // Маршрут для выхода из системы (logout)
 router.post('/logout', UserController.logout);
 
+// Маршрут для создания админа
+router.post('/createAdmin', UserController.createAdmin);
+
+// Маршрут для создания админа представителя
+router.post('/createRepresentative', UserController.createRepresentative);
+
+
 module.exports = router;

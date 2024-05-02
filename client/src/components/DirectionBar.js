@@ -3,7 +3,7 @@ import {observer} from "mobx-react-lite";
 import {Context} from "../index";
 import {Card, Row} from "react-bootstrap";
 
-const BrandBar = observer(() => {
+const DirectionBar = observer(() => {
     const {university} = useContext(Context)
 
     return (
@@ -13,8 +13,8 @@ const BrandBar = observer(() => {
                     style={{cursor:'pointer'}}
                     key={direction.id}
                     className="p-3"
-                    onClick={() => device.setSelectedBrand(direction)}
-                    border={direction.id === device.selectedBrand.id ? 'danger' : 'light'}
+                    onClick={() => device.setSelectedDirection(direction)}
+                    border={direction.id === device.selectedDirections.id ? 'danger' : 'light'}
                 >
                     {direction.name}
                 </Card>
@@ -23,4 +23,4 @@ const BrandBar = observer(() => {
     );
 });
 
-export default BrandBar;
+export default DirectionBar;

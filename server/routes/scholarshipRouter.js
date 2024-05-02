@@ -4,9 +4,9 @@ const scholarshipController = require('../controllers/scholarshipController');
 const checkRole = require('../middleware/checkRoleMiddleware');
 
 // Маршрут для создания стипендии
-router.post('/scholarships',checkRole("ADMIN") , scholarshipController.create);
+router.post('/',checkRole("ADMIN") , scholarshipController.create);
 
 // Маршрут для получения всех стипендий
-router.get('/scholarships', scholarshipController.getAll);
+router.get('/', scholarshipController.getAll);
 
 module.exports = router;
