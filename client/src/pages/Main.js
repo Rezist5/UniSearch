@@ -3,13 +3,13 @@ import {Container} from "react-bootstrap";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import DirectionBar from "../components/DirectionBar";
-import BrandBar from "../components/BrandBar";
-import BrandBar from "../components/BrandBar";
+import CountryBar from "../components/CountryBar";
+import SubjectBar from "../components/SubjectBar";
 
-import DeviceList from "../components/DeviceList";
+import UniversityList from "../components/UniversityList";
 import {observer} from "mobx-react-lite";
 import {Context} from "../index";
-import {fetchCountries, fetchDirections, fetchSubjects, fetchCountries} from "../http/universityAPI";
+import {fetchCountries, fetchDirections, fetchSubjects, fetchUniversities} from "../http/universityAPI";
 import Pages from "../components/Pages";
 
 const Main = observer(() => {
@@ -39,7 +39,8 @@ const Main = observer(() => {
                     <DirectionBar/>
                 </Col>
                 <Col md={9}>
-                    <BrandBar/>
+                    <SubjectBar/>
+                    <CountryBar/>
                     <DeviceList/>
                     <Pages/>
                 </Col>

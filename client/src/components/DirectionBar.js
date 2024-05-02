@@ -13,8 +13,8 @@ const DirectionBar = observer(() => {
                     style={{cursor:'pointer'}}
                     key={direction.id}
                     className="p-3"
-                    onClick={() => device.setSelectedDirection(direction)}
-                    border={direction.id === device.selectedDirections.id ? 'danger' : 'light'}
+                    onClick={() => university.setSelectedDirection(direction)}
+                    border={direction.id === university.selectedDirections.id ? 'danger' : 'light'}
                 >
                     {direction.name}
                 </Card>

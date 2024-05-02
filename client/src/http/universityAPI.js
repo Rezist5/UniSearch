@@ -1,5 +1,4 @@
 import {$authHost, $host} from "./index";
-import jwt_decode from "jwt-decode";
 
 export const createSubject = async (subject) => {
     const {data} = await $authHost.post('api/subject', subject)
@@ -42,17 +41,17 @@ export const fetchUniversities = async () => {
 }
 
 export const fetchOneUniversity = async (id) => {
-    const {data} = await $host.get('api/university', id)
+    const {data} = await $host.get(`api/university/${id}`)
     return data
 }
 
-export const UpdateUniversity = async (id, university) => {
-    const {data} = await $authHost.put('api/university', id, university)
-    return data
+export const updateUniversity = async (id, updatedUniversity) => {
+    const { data } = await $authHost.put(`api/university/${id}`, updatedUniversity);
+    return data;
 }
 
 export const DeleteUniversity = async (id) => {
-    const {data} = await $authHost.delete('api/university', id)
+    const {data} = await $authHost.delete(`api/university/${id}`)
     return data
 }
 
@@ -62,7 +61,7 @@ export const createReview = async (review) => {
 }
 
 export const fetchReviews = async (universityId) => {
-    const {data} = await $host.get('api/review', universityId)
+    const {data} = await $host.get(`api/review/${universityId}`)
     return data
 }
 
