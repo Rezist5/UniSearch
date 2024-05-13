@@ -5,7 +5,7 @@ const checkRole = require('../middleware/checkRoleMiddleware');
 
 
 // Маршрут для создания университета
-router.post('/', checkRole('ADMIN'), UniversityController.create);
+router.post('/', UniversityController.create);
 
 // Маршрут для получения списка всех университетов с возможностью фильтрации и пагинации
 router.get('/', UniversityController.getAll);  
@@ -20,6 +20,11 @@ router.put('/:id', checkRole('ADMIN'), UniversityController.update);
 router.delete('/:id', checkRole('ADMIN'), UniversityController.delete);
 
 // Маршрут для добавления изображения к университету
-router.post('/:universityId/image', checkRole('ADMIN'), UniversityController.addImage);
+router.post('/:universityId/image', UniversityController.addImage);
+
+// Маршрут для получения всех изображений по идентификатору университета
+router.get('/:universityId/images', UniversityController.getAllImagesByUniversityId);
+
+
 
 module.exports = router;

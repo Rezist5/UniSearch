@@ -22,6 +22,10 @@ router.put('/:subjectId/exam/:examId',checkRole('ADMIN') ,SubjectController.upda
 router.delete('/:subjectId/exam/:examId',checkRole('ADMIN') ,SubjectController.removeExamRequirement);
 
 // Маршрут для получения всех предметов
-router.get('/university/:universityId', SubjectController.getByUniversityId);
+router.get('/:universityId', SubjectController.getByUniversityId);
+
+// Маршрут для получения всех предметов
+router.get('/', SubjectController.getAll);
+
 
 module.exports = router;

@@ -5,18 +5,28 @@ export default class UniversityStore {
         this._countries = []
         this._directions = []
         this._subjects = []
+        this._languages = []
         this._universities = []
-        this._selectedDrections = {}
+        this._selectedDirections = {}
         this._selectedSubjects  = {}
+        this._selectedLanguages  = {}
         this._selectedCountries  = {}
         this._page = 1
         this._totalCount = 0
         this._limit = 3
+        this._sortBy = 'rating'
+        this._sortOrder = 'desc'
         makeAutoObservable(this)
     }
 
+    setSortBy(sortBy) {
+        this._sortBy = sortBy;
+    }
     setCountries(countries) {
         this._countries = countries;
+    }
+    setLanguages(languages) {
+        this._languages = languages;
     }
     setDirections(directions) {
         this._directions = directions;
@@ -47,8 +57,22 @@ export default class UniversityStore {
         this._totalCount = count;
     }
 
+    setSortOrder(order) {
+        this._sortOrder = order;
+    }
+
+    get sortOrder() {
+        return this._sortOrder;
+    }
+
+    get sortBy() {
+        return this._sortBy;
+    }
     get countries() {
         return this._countries;
+    }
+    get languages() {
+        return this._languages;
     }
     get directions() {
         return this._directions;
@@ -57,6 +81,7 @@ export default class UniversityStore {
         return this._subjects;
     }
     get universities() {
+        console.log(this._universities);
         return this._universities;
     }
     get selectedDirections() {

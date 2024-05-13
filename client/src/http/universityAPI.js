@@ -30,14 +30,26 @@ export const fetchCountries = async () => {
     return data
 }
 
+export const createCity = async (city) => {
+    const {data} = await $authHost.post('api/city', city)
+    return data
+}
+
+export const fetchOneCity = async (id) => {
+    const {data} = await $host.get(`api/city/${id}`)
+    return data
+}
+
 export const createUniversity = async (university) => {
     const {data} = await $authHost.post('api/university', university)
     return data
 }
 
-export const fetchUniversities = async () => {
-    const {data} = await $host.get('api/university')
-    return data
+export const fetchUniversities = async (filters) => {
+    
+    const { data } = await $host.get('api/university',  {params:filters} );
+    console.log(filters)
+    return data;
 }
 
 export const fetchOneUniversity = async (id) => {
@@ -55,9 +67,9 @@ export const DeleteUniversity = async (id) => {
     return data
 }
 
-export const createReview = async (review) => {
-    const {data} = await $authHost.post('api/review', review)
-    return data
+export const createReview = async (reviewData) => {
+    const { data } = await $authHost.post('api/review', reviewData);
+    return data;
 }
 
 export const fetchReviews = async (universityId) => {
@@ -70,7 +82,48 @@ export const createScholarship = async (scholarship) => {
     return data
 }
 
-export const fetchScholarships = async () => {
-    const {data} = await $host.get('api/scholarship')
+export const fetchScholarshipsByUniversity = async (universityId) => {
+    const {data} = await $host.get(`api/scholarship/${universityId}`)
     return data
 }
+
+export const createLanguage = async (language) => {
+    const {data} = await $authHost.post('api/language', language)
+    return data
+}
+
+export const fetchLanguages = async () => {
+    const {data} = await $host.get('api/language')
+    return data
+}
+
+export const addDirectionToUniversity = async (universityId, directionId) => {
+    const { data } = await $host.post(`api/direction/${directionId}/university/${universityId}`);
+    return data;
+};
+
+export const addLanguageToUniversity = async (universityId, languageId) => {
+    const { data } = await $host.post(`api/direction/${languageId}/university/${universityId}`);
+    return data;
+};
+
+export const fetchCitiesByCountry = async (countryId) => {
+    const {data} = await $host.get(`api/city/country/${countryId}`)
+    return data
+}
+
+export const fetchImagesByUniversity = async (universityId) => {
+    const {data} = await $host.get(`api/university/${universityId}/images`)
+    return data
+}
+
+export const addImageToUniversity = async (universityId, images) => {
+    const formData = new FormData();
+    images.forEach((image, index) => {
+        formData.append(`image-${index}`, image);
+    });
+
+    const { data } = await $authHost.post(`api/university/${universityId}/image`, formData);
+    return data;
+}
+

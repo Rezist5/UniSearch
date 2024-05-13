@@ -1,49 +1,81 @@
-import React, {useContext, useState} from 'react';
-import {Container, Form} from "react-bootstrap";
+import React, { useContext, useState, useEffect } from 'react';
+import { Container, Form } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
-import {NavLink, useLocation, useNavigate} from "react-router-dom";
-import {LOGIN_ROUTE, REGISTRATION_ROUTE, MAIN_ROUTE} from "../utils/consts";
-import {login, registration} from "../http/userAPI";
-import {observer} from "mobx-react-lite";
-import {Context} from "../index";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { LOGIN_ROUTE, REGISTRATION_ROUTE, MAIN_ROUTE } from "../utils/consts";
+import { login, registration } from "../http/userAPI";
+import { observer } from "mobx-react-lite";
+import { Context } from "../index";
+import { fetchCountries, fetchCitiesByCountry } from '../http/universityAPI';
 
 const Auth = observer(() => {
-    const {user} = useContext(Context);
+    const { user } = useContext(Context);
     const location = useLocation();
     const navigate = useNavigate();
     const isLogin = location.pathname === LOGIN_ROUTE;
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [fullname, setFullname] = useState(''); // Add state for Fullname
-    const [age, setAge] = useState(''); // Add state for age
-    const [school, setSchool] = useState(''); // Add state for school
-    const [cityId, setCityId] = useState(''); // Add state for cityId
-    const [grade, setGrade] = useState(''); // Add state for grade
+    const [fullname, setFullname] = useState('');
+    const [age, setAge] = useState('');
+    const [school, setSchool] = useState('');
+    const [countryId, setCountryId] = useState('');
+    const [cityId, setCityId] = useState('');
+    const [grade, setGrade] = useState('');
+    const [countries, setCountries] = useState([]);
+    const [cities, setCities] = useState([]);
+
+    useEffect(() => {
+        getCountries();
+    }, []);
+
+    const getCountries = async () => {
+        try {
+            fetchCountries(countryId).then(data => setCountries(data))
+        } catch (error) {
+            console.error('Error fetching countries:', error);
+        }
+    };
+
+    const getCities = async (countryId) => {
+        try { 
+            fetchCitiesByCountry(countryId).then(data => setCities(data))
+        } catch (error) {
+            console.error('Error fetching cities:', error);
+        }
+    };
+
+    const handleCountryChange = (e) => {
+        const selectedCountryId = e.target.value;
+        setCountryId(selectedCountryId);
+        getCities(selectedCountryId);
+    };
 
     const click = async () => {
         try {
+            
             let data;
             if (isLogin) {
                 data = await login(email, password);
             } else {
-                data = await registration(email, password, fullname, age, school, cityId, grade); // Pass additional data for registration
+                data = await registration(email, password, fullname, age, school, cityId, grade);
             }
-            user.setUser(user);
+            console.log(data);
+            user.setUser(data.user);
             user.setIsAuth(true);
-            navigate.push(MAIN_ROUTE);
+            navigate(MAIN_ROUTE);
         } catch (e) {
-            alert(e.response.data.message);
+            alert(e);
         }
     };
 
     return (
         <Container
             className="d-flex justify-content-center align-items-center"
-            style={{height: window.innerHeight - 54}}
+            style={{ height: window.innerHeight - 54 }}
         >
-            <Card style={{width: 600}} className="p-5">
+            <Card style={{ width: 600 }} className="p-5">
                 <h2 className="m-auto">{isLogin ? 'Авторизация' : "Регистрация"}</h2>
                 <Form className="d-flex flex-column">
                     <Form.Control
@@ -59,7 +91,7 @@ const Auth = observer(() => {
                         onChange={e => setPassword(e.target.value)}
                         type="password"
                     />
-                    {!isLogin && ( // Render additional inputs for registration only
+                    {!isLogin && (
                         <>
                             <Form.Control
                                 className="mt-3"
@@ -80,11 +112,27 @@ const Auth = observer(() => {
                                 onChange={e => setSchool(e.target.value)}
                             />
                             <Form.Control
+                                as="select"
                                 className="mt-3"
-                                placeholder="Введите ID вашего города..."
+                                value={countryId}
+                                onChange={handleCountryChange}
+                            >
+                                <option value="">Выберите страну...</option>
+                                {countries.map(country => (
+                                    <option key={country.id} value={country.id}>{country.name}</option>
+                                ))}
+                            </Form.Control>
+                            <Form.Control
+                                as="select"
+                                className="mt-3"
                                 value={cityId}
                                 onChange={e => setCityId(e.target.value)}
-                            />
+                            >
+                                <option value="">Выберите город...</option>
+                                {cities.map(city => (
+                                    <option key={city.id} value={city.id}>{city.name}</option>
+                                ))}
+                            </Form.Control>
                             <Form.Control
                                 className="mt-3"
                                 placeholder="Введите ваш класс/курс..."

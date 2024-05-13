@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const UserController = require('../controllers/userController');
+const authMiddleware = require('../middleware/authMiddleware');
 
 // Маршрут для регистрации нового пользователя
 router.post('/registration', UserController.registration);
@@ -9,7 +10,7 @@ router.post('/registration', UserController.registration);
 router.post('/login', UserController.login);
 
 // Маршрут для проверки аутентификации пользователя
-router.get('/check', UserController.check);
+router.get('/check', authMiddleware, UserController.check);
 
 // Маршрут для выхода из системы (logout)
 router.post('/logout', UserController.logout);

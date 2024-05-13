@@ -14,7 +14,14 @@ class SubjectController {
       next(ApiError.badRequest(error.message));
     }
   }
-
+  async getAll(req, res, next) {
+    try {
+      const subjects = await Subject.findAll();
+      return res.json(subjects);
+    } catch (error) {
+      next(ApiError.internal(error.message));
+    }
+  }
   async addExamRequirement(req, res, next) {
     try {
       const { subjectId } = req.params;

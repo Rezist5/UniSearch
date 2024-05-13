@@ -11,89 +11,173 @@ const Exam = require('../models/Exam');
 const UniversityDirection = require('../models/UniversityDirection');
 const UniversityLanguage = require('../models/UniversityLanguage');
 
-
 class UniversityController {
     async create(req, res, next) {
         try {
-            let { cityId, name, rating, YearOfFoundation, NumberOfStudents, directions, languages } = req.body;
-            const university = await University.create({ cityId, name, rating, YearOfFoundation, NumberOfStudents });
-
-            // If directions and languages are provided, associate them with the university
+            let { cityId, name, rating, YearOfFoundation, NumberOfStudents, directions, languages, price } = req.body;
+    
+            // Создаем университет
+            const university = await University.create({ cityId, name, rating, YearOfFoundation, NumberOfStudents, price });
+    
+            // Если переданы направления, находим их в базе данных и связываем с университетом через модель UniversityDirection
             if (directions) {
-                await university.addUniversityDirections(directions);
+                const foundDirections = await Direction.findAll({ where: { id: directions } });
+                await university.addDirections(foundDirections);
             }
+    
+            // Если переданы языки, находим их в базе данных и добавляем к университету
             if (languages) {
-                await university.addUniversityLanguages(languages);
+                const foundLanguages = await Language.findAll({ where: { id: languages } });
+                await university.setLanguages(foundLanguages);
             }
-
+    
             return res.json(university);
         } catch (e) {
             next(ApiError.badRequest(e.message));
         }
     }
+    
+    
 
     async getAll(req, res, next) {
         try {
-            let { cityId, countryId, directionId, languageId, examId, limit, page, sortBy, sortOrder } = req.query;
-            page = page || 1;
-            limit = limit || 9;
+            let { directionId, countryId, subjectId, page, limit, sortOrder } = req.query;
+            page = parseInt(page) || 1;
+            limit = parseInt(limit) || 9;
             let offset = (page - 1) * limit;
-    
-            let filterOptions = {};
-    
-            if (cityId) {
-                filterOptions.cityId = cityId;
-            }
-            if (countryId) {
-                filterOptions['$City.countryId$'] = countryId;
-            }
-            if (directionId) {
-                filterOptions['$Directions.id$'] = directionId;
-            }
-            if (languageId) {
-                filterOptions['$Languages.id$'] = languageId;
-            }
-            if (examId) {
-                filterOptions['$Subjects.Exams.id$'] = examId;
-            }
-    
-            let includeOptions = [
-                { model: City, include: [{ model: Country }] },
-                { model: Direction, as: 'Directions' },
-                { model: Language, as: 'Languages' },
-                { model: Subject, include: [{ model: Exam }] }
-            ];
-    
-            let orderOptions = [];
-            if (sortBy === 'rating') {
-                orderOptions.push(['rating', sortOrder === 'desc' ? 'DESC' : 'ASC']);
-            }
-            else if (sortBy === 'scholarship') {
-                orderOptions.push([{ model: Scholarship }, 'value', sortOrder === 'desc' ? 'DESC' : 'ASC']);
-            }
             let universities;
-            if (Object.keys(filterOptions).length !== 0) {
-                universities = await University.findAndCountAll({
-                    where: filterOptions,
-                    include: includeOptions,
-                    limit,
-                    offset,
-                    order: orderOptions
-                });
-            } else {
+    
+            if (!directionId && !countryId && !subjectId) {
+                universities = await University.findAndCountAll({limit, offset, order: [['name', sortOrder || 'ASC']]});
+            }
+            if (directionId && !countryId && !subjectId) {
                 universities = await University.findAll({
-                    limit,
-                    offset,
-                    order: orderOptions
+                    include: [{
+                        model: Direction,
+                        as: 'directions',
+                        through: { attributes: [] },
+                        where: { id: directionId }
+                    }],
+                    limit, offset, order: [['name', sortOrder || 'ASC']]
+                });
+            }
+            if (!directionId && countryId && !subjectId) {
+                universities = await University.findAll({
+                    include: [{
+                        model: City,
+                        as: 'City',
+                        where: { countryId },
+                        attributes: []
+                    }],
+                    limit, offset, order: [['name', sortOrder || 'ASC']]
+                });
+            }
+            if (!directionId && !countryId && subjectId) {
+                universities = await University.findAll({
+                    include: [{
+                        model: Subject,
+                        as: 'subjects',
+                        where: { id: subjectId },
+                        attributes: []
+                    }],
+                    limit, offset, order: [['name', sortOrder || 'ASC']]
+                });
+            }
+            if (directionId && countryId && !subjectId) {
+                universities = await University.findAll({
+                    include: [
+                        {
+                            model: Direction,
+                            as: 'directions',
+                            through: { attributes: [] },
+                            where: { id: directionId }
+                        },
+                        {
+                            model: City,
+                            as: 'City',
+                            where: { countryId },
+                            attributes: []
+                        }
+                    ],
+                    limit, offset, order: [['name', sortOrder || 'ASC']]
+                });
+            }
+            if (directionId && !countryId && subjectId) {
+                universities = await University.findAll({
+                    include: [
+                        {
+                            model: Direction,
+                            as: 'directions',
+                            through: { attributes: [] },
+                            where: { id: directionId }
+                        },
+                        {
+                            model: Subject,
+                            as: 'subjects',
+                            where: { id: subjectId },
+                            attributes: []
+                        }
+                    ],
+                    limit, offset, order: [['name', sortOrder || 'ASC']]
+                });
+            }
+            if (!directionId && countryId && subjectId) {
+                universities = await University.findAll({
+                    include: [
+                        {
+                            model: City,
+                            as: 'City',
+                            where: { countryId },
+                            attributes: []
+                        },
+                        {
+                            model: Subject,
+                            as: 'subjects',
+                            where: { id: subjectId },
+                            attributes: []
+                        }
+                    ],
+                    limit, offset, order: [['name', sortOrder || 'ASC']]
+                });
+            }
+            if (directionId && countryId && subjectId) {
+                universities = await University.findAll({
+                    include: [
+                        {
+                            model: Direction,
+                            as: 'directions',
+                            through: { attributes: [] },
+                            where: { id: directionId }
+                        },
+                        {
+                            model: City,
+                            as: 'City',
+                            where: { countryId },
+                            attributes: []
+                        },
+                        {
+                            model: Subject,
+                            as: 'subjects',
+                            where: { id: subjectId },
+                            attributes: []
+                        }
+                    ],
+                    limit, offset, order: [['name', sortOrder || 'ASC']]
                 });
             }
     
             return res.json(universities);
-        } catch (error) {
-            console.error(error);
-            return next(ApiError.internal('Internal Server Error'));
+        } catch (err) {
+            console.log(err);
+            next(err);
         }
     }
+    
+    
+    
+    
+    
+    
     
     
     
@@ -142,18 +226,32 @@ class UniversityController {
     async addImage(req, res, next) {
         try {
             const { universityId } = req.params;
-            const { image } = req.body;
-
-            // Создаем новую запись изображения, связанную с идентификатором университета
-            const newImage = await UniImage.create({ universityId, image });
-
-            return res.json(newImage);
+            const { images } = req.body;
+    
+            // Создаем новую запись для каждого изображения, связанную с идентификатором университета
+            const newImages = await Promise.all(images.map(image => UniImage.create({ universityId, image })));
+    
+            return res.json(newImages);
         } catch (error) {
             // Обрабатываем ошибки
             next(ApiError.badRequest(error.message));
         }
     }
-
+    
+    
+    
+    async getAllImagesByUniversityId(req, res, next) {
+        try {
+            const { universityId } = req.params;
+    
+            const images = await UniImage.findAll({ where: { universityId } });
+    
+            return res.json(images);
+        } catch (error) {
+            // Обрабатываем ошибки
+            next(ApiError.internal(error.message));
+        }
+    }
 }
 
 module.exports = new UniversityController();

@@ -14,9 +14,16 @@ export const login = async (email, password) => {
 }
 
 export const check = async () => {
-    const {data} = await $authHost.get('api/user/auth' )
-    localStorage.setItem('token', data.token)
-    return jwtDecode(data.token)
+    const response = await $authHost.get('api/user/check');
+    const { data } = response;
+    localStorage.setItem('token', data.token);
+    
+    return data;
+};
+
+export const getRepresentativeInfo = async (id) => {
+    const {data} = await $authHost.get(`api/user/representative/${id}` )
+    return jwtDecode(data)
 }
 
 export const createAdmin = async (email, password) => {

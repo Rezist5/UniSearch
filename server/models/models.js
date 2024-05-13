@@ -1,5 +1,6 @@
 
 const sequelize = require('../db');
+const { DataTypes } = require('sequelize');
 const User = require('./User');
 const University = require('./University');
 const Country = require('./Country');
@@ -21,6 +22,8 @@ const RepresentativeInfo = require('./RepresentativeInfo');
 const EnrolleeInfo = require('./EnrolleeInfo');
 const Request = require('./Request');
 const Answer = require('./Answer');
+
+
 
 Request.hasMany(Answer, { foreignKey: 'requestId' });
 Answer.belongsTo(Request, { foreignKey: 'requestId' });
@@ -46,8 +49,9 @@ Visa.belongsTo(Country, { foreignKey: 'countryId' });
 Language.belongsToMany(University, { through: UniversityLanguage });
 University.belongsToMany(Language, { through: UniversityLanguage });
 
-Direction.belongsToMany(University, { through: UniversityDirection });
-University.belongsToMany(Direction, { through: UniversityDirection });
+Direction.belongsToMany(University, { through: UniversityDirection ,required: true, duplicating: false });
+University.belongsToMany(Direction, { through: UniversityDirection ,required: true, duplicating: false, as: 'Directions' });
+
 
 University.hasMany(Review, { foreignKey: 'universityId' });
 Review.belongsTo(University, { foreignKey: 'universityId' });
@@ -74,8 +78,9 @@ University.belongsTo(City, { foreignKey: 'cityId' });
 ReviewReply.belongsTo(User, { foreignKey: 'userId' });
 User.hasMany(ReviewReply, { foreignKey: 'userId' });
 
-ReviewReply.belongsTo(Review, { foreignKey: 'reviewId' });
-Review.hasMany(ReviewReply, { foreignKey: 'reviewId' });
+Review.hasMany(ReviewReply, { foreignKey: 'reviewId', as: 'replies' });
+ReviewReply.belongsTo(Review, { foreignKey: 'reviewId', as: 'review' });
+
 
 module.exports = {
     User,

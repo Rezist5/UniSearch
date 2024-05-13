@@ -10,7 +10,7 @@ import Container from "react-bootstrap/Container";
 import {useNavigate} from 'react-router-dom'
 const NavBar = observer(() => {
     const {user} = useContext(Context)
-    const history = useNavigate()
+    const navigate = useNavigate()
 
     const logOut = () => {
         user.setUser({})
@@ -19,17 +19,17 @@ const NavBar = observer(() => {
 
     return (
         <Navbar bg="dark" variant="dark">
-            <Container>
-                <NavLink style={{color:'white'}} to={MAIN_ROUTE}>КупиДевайс</NavLink>
+            <Container bg="dark" variant="dark">
+                <NavLink style={{color:'white'}} to={MAIN_ROUTE}>UniSearch</NavLink>
                 {user.isAuth ?
                     <Nav className="ml-auto" style={{color: 'white'}}>
                         <Button
                             variant={"outline-light"}
-                            onClick={() => history.push(ADMIN_ROUTE)}
+                            onClick={() => navigate(ADMIN_ROUTE)}
                         >
                             Админ панель
                         </Button>
-                        <Button
+                        <Button 
                             variant={"outline-light"}
                             onClick={() => logOut()}
                             className="ml-2"
@@ -39,7 +39,7 @@ const NavBar = observer(() => {
                     </Nav>
                     :
                     <Nav className="ml-auto" style={{color: 'white'}}>
-                        <Button variant={"outline-light"} onClick={() => history.push(LOGIN_ROUTE)}>Авторизация</Button>
+                        <Button variant={"outline-light"} onClick={() => navigate(LOGIN_ROUTE)}>Авторизация</Button>
                     </Nav>
                 }
             </Container>

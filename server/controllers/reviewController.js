@@ -10,17 +10,25 @@ class ReviewController {
 
             // Если есть reviewId, значит это ответ на отзыв
             if (reviewId) {
-                const reply = await ReviewReply.create({ userId, reviewId, content });
+                // Проверяем, существует ли указанный родительский отзыв (rootId)
+                const parentReview = await Review.findByPk(reviewId);
+                if (!parentReview) {
+                    return res.status(404).json({ message: 'Parent review not found.' });
+                }
+
+                // Создаем ответ на отзыв и присваиваем ему rootId
+                const reply = await ReviewReply.create({ userId, reviewId, rootId: parentReview.rootId , content });
                 return res.json(reply);
             }
 
             // Если нет reviewId, значит это новый отзыв
-            const review = await Review.create({ userId, universityId, rating });
+            const review = await Review.create({ userId, universityId, rating, rootId: review.id });
             return res.json(review);
         } catch (error) {
             next(ApiError.badRequest(error.message));
         }
     }
+
     async getAllReviewsByUniversityId(req, res, next) {
         try {
             const { universityId, direction } = req.params;

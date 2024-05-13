@@ -20,6 +20,27 @@ class CityController {
             next(ApiError.internal(error.message));
         }
     }
+    async getById(req, res, next) {
+        try {
+            const { id } = req.params;
+            const city = await City.findByPk(id);   
+            if (!city) {
+                return next(ApiError.badRequest('City not found'));
+            }
+            return res.json(city);
+        } catch (error) {
+            next(ApiError.internal(error.message));
+        }
+    }
+    async getCitiesByCountry(req, res, next) {
+        try {
+            const { countryId } = req.params;
+            const cities = await City.findAll({ where: { countryId } });
+            return res.json(cities);
+        } catch (error) {
+            next(ApiError.internal(error.message));
+        }
+    }
 }
 
 module.exports = new CityController();

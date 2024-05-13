@@ -16,7 +16,7 @@ export const authRoutes = [
         path: PORTFOLIO_ROUTE,
         Component: Portfolio
     },
-    {
+    {   
         path: REPRESENTATIVE_ROUTE,
         Component: Representative
     },

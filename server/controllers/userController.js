@@ -27,16 +27,16 @@ class UserController {
         }
         const role = 'ENROLLEE';
         const hashPassword = await bcrypt.hash(password, 5);
-        const user = await User.create({ email,Fullname , password: hashPassword , role});
-        await EnrolleeInfo.create(grade, age, user.id);
+        const user = await User.create({ email, Fullname , password: hashPassword , role});
+        await EnrolleeInfo.create({ grade, age, userId: user.id });
         const token = generateJwt(user.id, user.email, user.role);
         return res.json({ token });
     }
     async createAdmin(req, res, next) {
         try {
-            const { email, password, fullName } = req.body;
-
-            if (!email || !password || !fullName) {
+            const { email, password, Fullname } = req.body;
+            console.log(req.body)
+            if (!email || !password || !Fullname) {
                 return next(ApiError.badRequest('Некорректные данные'));
             }
 
@@ -45,7 +45,7 @@ class UserController {
             const admin = await User.create({
                 email,
                 password: hashPassword,
-                fullName,
+                Fullname,
                 role: 'ADMIN' 
             });
 
@@ -115,10 +115,30 @@ class UserController {
         return res.json({ token });
     }
 
+    async getRepresentativeInfo(req, res, next){
+        try {
+            const { id } = req.id;
+            const representativeInfo = await RepresentativeInfo.findOne({
+                where: { userId: id }
+            });
+            if (representativeInfo) {
+                return representativeInfo;
+            } else {
+                return next(ApiError.internal('Данные не найдены'));
+            }
+        } catch (error) {
+            next(error);
+        }
+    };
     async check(req, res, next) {
-        const token = generateJwt(req.user.id, req.user.email, req.user.role);
-        return res.json({ token });
+        try {
+            const token = req.headers.authorization.split(' ')[1];
+            return res.json({ token });
+        } catch (error) {
+            return res.status(401).json({ message: 'Ошибка аутентификации: ' + error.message });
+        }
     }
+    
     async logout(req, res, next) {
         try {
             const token = req.headers.authorization.split(' ')[1]; 

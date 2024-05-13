@@ -9,6 +9,9 @@ const languageRouter = require('./languageRouter')
 const examRouter = require('./examRouter')
 const subjectRouter = require('./subjectRouter')
 const portfolioRouter = require('./portfolioRouter')
+const cityRouter = require('./cityRouter')
+const countryRouter = require('./countryRouter')
+
 
 
 
@@ -20,7 +23,9 @@ router.use('/visa', visaRouter)
 router.use('/language', languageRouter)
 router.use('/exam', examRouter)
 router.use('/subject', subjectRouter)
+router.use('/city', cityRouter)
 router.use('/portfolio', portfolioRouter)
+router.use('/country', countryRouter)
 
 
 
