@@ -2,7 +2,6 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../db');
 
 const RepresentativeInfo = sequelize.define('RepresentativeInfo', {
-    universityId: {type: DataTypes.INTEGER, allowNull: false},
-    userId: {type: DataTypes.INTEGER, allowNull: false},
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
 });
 module.exports = RepresentativeInfo;

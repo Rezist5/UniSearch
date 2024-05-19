@@ -12,6 +12,7 @@ router.post('/login', UserController.login);
 // Маршрут для проверки аутентификации пользователя
 router.get('/check', authMiddleware, UserController.check);
 
+
 // Маршрут для выхода из системы (logout)
 router.post('/logout', UserController.logout);
 
@@ -20,6 +21,12 @@ router.post('/createAdmin', UserController.createAdmin);
 
 // Маршрут для создания админа представителя
 router.post('/createRepresentative', UserController.createRepresentative);
+
+router.get('/:id', UserController.getName);
+
+router.put('/:id', authMiddleware, UserController.uploadAvatar);
+
+router.get('/representative/:id', UserController.getRepresentativeInfo);
 
 
 module.exports = router;

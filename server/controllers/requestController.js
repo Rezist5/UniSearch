@@ -1,22 +1,26 @@
-const { Request, Answer } = require('../models');
+const ApiError = require('../error/ApiError');
+const Request = require('../models/Request');
+const Answer = require('../models/Answer');
+const e = require('express');
 
 class RequestController {
     async sendRequest(req, res, next) {
         try {
-            const { universityId, description } = req.body;
-            const userId = req.userData.id; 
-    
+            const { universityId } = req.params;
+            const {enrolleeId} = req.params; 
+            const { description } = req.body;
             if (!universityId || !description) {
                 return next(ApiError.badRequest('Некорректные данные'));
             }
-    
             const request = await Request.create({
-                userId,
-                universityId,
-                description,
-                status: 'Pending' 
+                userId : enrolleeId,
+                universityId: universityId,
+                status: 'Pending',
+                description: description
+                
             });
-    
+            console.log(request)
+
             return res.json({ message: 'Запрос успешно отправлен', request });
         } catch (error) {
             next(ApiError.badRequest(error));
@@ -25,7 +29,9 @@ class RequestController {
 
     async respondToRequest(req, res, next) {
         try {
-            const { requestId, description, status} = req.body;
+            const { requestId, status } = req.params;
+            const { description } = req.body;
+            
 
             if (!requestId || !description) {
                 return next(ApiError.badRequest('Некорректные данные'));
@@ -51,26 +57,14 @@ class RequestController {
     }
 
     async getAllRequests(req, res, next) {
+        
         try {
-            const userId = req.userData.id;
-    
-            // Получаем параметры фильтрации из запроса
-            const { status, universityId } = req.query;
-            let filter = { userId }; // Добавляем условие фильтрации по идентификатору текущего пользователя
-    
-            // Проверяем наличие параметров фильтрации и добавляем их к объекту фильтра
-            if (status) {
-                filter.status = status;
-            }
-            if (universityId) {
-                filter.universityId = universityId;
-            }
-    
-            // Получаем список запросов с учетом фильтрации
+            const {universityId} = req.params;
             const requests = await Request.findAll({
-                where: filter
+                where: {universityId : universityId}
             });
-    
+            console.log(requests)
+
             return res.json({ requests });
         } catch (error) {
             next(ApiError.badRequest(error));

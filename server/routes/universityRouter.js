@@ -20,10 +20,14 @@ router.put('/:id', checkRole('ADMIN'), UniversityController.update);
 router.delete('/:id', checkRole('ADMIN'), UniversityController.delete);
 
 // Маршрут для добавления изображения к университету
-router.post('/:universityId/image', UniversityController.addImage);
+router.post('/:universityId/image', UniversityController.addImage); 
 
 // Маршрут для получения всех изображений по идентификатору университета
 router.get('/:universityId/images', UniversityController.getAllImagesByUniversityId);
+
+router.get('/:id/languages', UniversityController.getUniversityLanguages);
+
+router.get('/:id/directions', UniversityController.getUniversityDirections);
 
 
 

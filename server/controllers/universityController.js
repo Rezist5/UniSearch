@@ -10,6 +10,7 @@ const Scholarship = require('../models/Scholarship');
 const Exam = require('../models/Exam');
 const UniversityDirection = require('../models/UniversityDirection');
 const UniversityLanguage = require('../models/UniversityLanguage');
+const UniImage = require('../models/UniImage');
 
 class UniversityController {
     async create(req, res, next) {
@@ -38,7 +39,43 @@ class UniversityController {
     }
     
     
-
+    async getUniversityLanguages(req, res) {
+        const { id } = req.params;
+        try {
+          if (!id) {
+            return res.status(400).json({ message: 'University ID is required' });
+          }
+      
+          const university = await University.findByPk(id);
+          if (!university) {
+            return res.status(404).json({ message: 'University not found' });
+          }
+      
+          const languages = await university.getLanguages();
+          res.json(languages);
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ message: 'Server error' });
+        }
+      }
+      
+      async getUniversityDirections(req, res){
+        const { id } = req.params;
+        try {
+          const directions = await Direction.findAll({
+            include: [{
+              model: University,
+              where: { id },
+              through: { attributes: [] }
+            }]
+          });
+      
+          res.json(directions);
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ message: 'Server error' });
+        }
+      }
     async getAll(req, res, next) {
         try {
             let { directionId, countryId, subjectId, page, limit, sortOrder } = req.query;
@@ -51,10 +88,10 @@ class UniversityController {
                 universities = await University.findAndCountAll({limit, offset, order: [['name', sortOrder || 'ASC']]});
             }
             if (directionId && !countryId && !subjectId) {
-                universities = await University.findAll({
+                universities = await University.findAndCountAll({
                     include: [{
                         model: Direction,
-                        as: 'directions',
+                        as: 'Directions',
                         through: { attributes: [] },
                         where: { id: directionId }
                     }],
@@ -62,7 +99,7 @@ class UniversityController {
                 });
             }
             if (!directionId && countryId && !subjectId) {
-                universities = await University.findAll({
+                universities = await University.findAndCountAll({
                     include: [{
                         model: City,
                         as: 'City',
@@ -73,7 +110,7 @@ class UniversityController {
                 });
             }
             if (!directionId && !countryId && subjectId) {
-                universities = await University.findAll({
+                universities = await University.findAndCountAll({
                     include: [{
                         model: Subject,
                         as: 'subjects',
@@ -84,11 +121,11 @@ class UniversityController {
                 });
             }
             if (directionId && countryId && !subjectId) {
-                universities = await University.findAll({
+                universities = await University.findAndCountAll({
                     include: [
                         {
                             model: Direction,
-                            as: 'directions',
+                            as: 'Directions',
                             through: { attributes: [] },
                             where: { id: directionId }
                         },
@@ -103,11 +140,11 @@ class UniversityController {
                 });
             }
             if (directionId && !countryId && subjectId) {
-                universities = await University.findAll({
+                universities = await University.findAndCountAll({
                     include: [
                         {
                             model: Direction,
-                            as: 'directions',
+                            as: 'Directions',
                             through: { attributes: [] },
                             where: { id: directionId }
                         },
@@ -122,7 +159,7 @@ class UniversityController {
                 });
             }
             if (!directionId && countryId && subjectId) {
-                universities = await University.findAll({
+                universities = await University.findAndCountAll({
                     include: [
                         {
                             model: City,
@@ -141,11 +178,11 @@ class UniversityController {
                 });
             }
             if (directionId && countryId && subjectId) {
-                universities = await University.findAll({
+                universities = await University.findAndCountAll({
                     include: [
                         {
                             model: Direction,
-                            as: 'directions',
+                            as: 'Directions',
                             through: { attributes: [] },
                             where: { id: directionId }
                         },
@@ -184,8 +221,7 @@ class UniversityController {
     async getOne(req, res) {
         const { id } = req.params;
         const university = await University.findOne({
-            where: { id },
-            include: [{ model: UniversityDirection, as: 'directions' }, { model: UniversityLanguage, as: 'languages' }]
+            where: { id }
         });
         return res.json(university);
     }
@@ -226,10 +262,16 @@ class UniversityController {
     async addImage(req, res, next) {
         try {
             const { universityId } = req.params;
-            const { images } = req.body;
+            const image = req.files.image;
+            console.log(universityId)
+            // Создаем новое имя файла, чтобы избежать конфликтов имен
+            const newFileName = `${Date.now()}-${image.name}`;
     
-            // Создаем новую запись для каждого изображения, связанную с идентификатором университета
-            const newImages = await Promise.all(images.map(image => UniImage.create({ universityId, image })));
+            // Перемещаем файл в папку 'uploads' на сервере
+            image.mv(`./static/university/${newFileName}`);
+    
+            // Сохраняем ссылку на изображение в базе данных
+            const newImages = await UniImage.create({ image: `/static/university/${newFileName}` , universityId});
     
             return res.json(newImages);
         } catch (error) {
@@ -240,15 +282,15 @@ class UniversityController {
     
     
     
+    
     async getAllImagesByUniversityId(req, res, next) {
         try {
             const { universityId } = req.params;
     
             const images = await UniImage.findAll({ where: { universityId } });
-    
             return res.json(images);
         } catch (error) {
-            // Обрабатываем ошибки
+            
             next(ApiError.internal(error.message));
         }
     }

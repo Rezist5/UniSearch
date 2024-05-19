@@ -50,7 +50,7 @@ Language.belongsToMany(University, { through: UniversityLanguage });
 University.belongsToMany(Language, { through: UniversityLanguage });
 
 Direction.belongsToMany(University, { through: UniversityDirection ,required: true, duplicating: false });
-University.belongsToMany(Direction, { through: UniversityDirection ,required: true, duplicating: false, as: 'Directions' });
+University.belongsToMany(Direction, { through: UniversityDirection ,required: true, duplicating: false});
 
 
 University.hasMany(Review, { foreignKey: 'universityId' });

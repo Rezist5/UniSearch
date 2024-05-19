@@ -6,6 +6,6 @@ const Review = sequelize.define('Review', {
     userId: { type: DataTypes.INTEGER, allowNull: false },
     universityId: { type: DataTypes.INTEGER, allowNull: false },
     rating: { type: DataTypes.INTEGER, allowNull: false },
-    rootId: { type: DataTypes.INTEGER } // Добавляем поле для указания на корневой комментарий в древе
+    content : { type: DataTypes.STRING, allowNull: false }
 });
 module.exports = Review;

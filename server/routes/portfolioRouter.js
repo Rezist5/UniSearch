@@ -5,18 +5,15 @@ const checkRole = require('../middleware/checkRoleMiddleware')
 const authMiddleware = require('../middleware/authMiddleware');
 
 // Endpoint for creating a new portfolio
-router.post('/', authMiddleware, portfolioController.create);
-
-// Endpoint for getting all portfolios for a user
-router.get('/', authMiddleware, portfolioController.getAll);
+router.post('/', portfolioController.create);
 
 // Endpoint for getting a portfolio by ID
-router.get('/:id', authMiddleware, portfolioController.getById);
+router.get('/:enrolleeId', portfolioController.getAllByEnrolleeId);
 
 // Endpoint for updating a portfolio
-router.put('/:id', authMiddleware, portfolioController.update);
+router.put('/:id', portfolioController.update);
 
 // Endpoint for deleting a portfolio
-router.delete('/:id', authMiddleware, portfolioController.delete);
+router.delete('/:id', portfolioController.delete);
 
 module.exports = router;

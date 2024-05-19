@@ -9,4 +9,6 @@ router.post('/',checkRole("ADMIN") , scholarshipController.create);
 // Маршрут для получения всех стипендий
 router.get('/', scholarshipController.getAll);
 
+router.get('/:universityId', scholarshipController.getByUniversityId);
+
 module.exports = router;

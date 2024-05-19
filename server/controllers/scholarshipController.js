@@ -5,6 +5,7 @@ class ScholarshipController {
     async create(req, res, next) {
         try {
             const { name, requirements, universityId, value } = req.body;
+            console.log(req.body);
             const scholarship = await Scholarship.create({ name, requirements, universityId, value });
             return res.json(scholarship);
         } catch (error) {
@@ -15,6 +16,15 @@ class ScholarshipController {
     async getAll(req, res, next) {
         try {
             const scholarships = await Scholarship.findAll();
+            return res.json(scholarships);
+        } catch (error) {
+            return next(ApiError.internal(error.message));
+        }
+    }
+    async getByUniversityId(req, res, next) {
+        try {
+            const { universityId } = req.params;
+            const scholarships = await Scholarship.findAll({ where: { universityId } });
             return res.json(scholarships);
         } catch (error) {
             return next(ApiError.internal(error.message));

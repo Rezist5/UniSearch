@@ -1,19 +1,18 @@
 import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
-import { createReview } from '../http/reviewAPI';
+import { createReview } from '../http/universityAPI';
 
 const ReviewForm = ({ universityId }) => {
-  const [text, setText] = useState('');
+  const [content, setContent] = useState('');
   const [rating, setRating] = useState(0);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await createReview(universityId, text, rating );
+      await createReview({ content, rating }, universityId);
       // Успешно отправлено, можно добавить дополнительную логику, например очистку полей формы или обновление списка отзывов
-      setText('');
+      setContent('');
       setRating(0);
-      alert('Отзыв успешно отправлен!');
     } catch (error) {
       // Обработка ошибок, например, вывод сообщения об ошибке
       console.error('Ошибка при отправке отзыва:', error.message);
@@ -28,8 +27,8 @@ const ReviewForm = ({ universityId }) => {
         <Form.Control
           as="textarea"
           rows={3}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
           required
         />
       </Form.Group>

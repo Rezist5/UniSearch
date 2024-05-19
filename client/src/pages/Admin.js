@@ -4,48 +4,56 @@ import CreateCity from '../components/modals/CreateCity';
 import CreateDirection from '../components/modals/CreateDirection';
 import CreateLanguage from '../components/modals/CreateLanguage';
 import CreateUniversity from '../components/modals/CreateUniversity';
+import CreateAdmin from '../components/modals/CreateAdmin'; // import the CreateAdmin component
 
 const Admin = () => {
     const [showCreateCityModal, setShowCreateCityModal] = useState(false);
-  const [showCreateDirectionModal, setShowCreateDirectionModal] = useState(false);
-  const [showCreateLanguageModal, setShowCreateLanguageModal] = useState(false);
-  const [showCreateUniversityModal, setShowCreateUniversityModal] = useState(false);
-  return (
-    <Container>
-        <Row className="mb-3">
-            <Col>
-            <h2>Admin Panel</h2>
-            </Col>
-        </Row>
-        <Row className="mb-3">
-            <Col>
-            <h4>Create City</h4>
-            <Button variant="primary" onClick={() => setShowCreateCityModal(true)}>Create City</Button>
-            <CreateCity show={showCreateCityModal} onHide={() => setShowCreateCityModal(false)} />
-            </Col>
-            <Col>
-            <h4>Create Direction</h4>
-            <Button variant="primary" onClick={() => setShowCreateDirectionModal(true)}>Create Direction</Button>
-            <CreateDirection show={showCreateDirectionModal} onHide={() => setShowCreateDirectionModal(false)} />
-            </Col>
-        </Row>
-        <Row className="mb-3">
-            <Col>
-            <h4>Create Language</h4>
-            <Button variant="primary" onClick={() => setShowCreateLanguageModal(true)}>Create Language</Button>
-            <CreateLanguage show={showCreateLanguageModal} onHide={() => setShowCreateLanguageModal(false)} />
-            </Col>
-        </Row>
-        <Row className="mb-3">
-            <Col>
-            <h4>Create University</h4>
-            <Button variant="primary" onClick={() => setShowCreateUniversityModal(true)}>Create University</Button>
-            <CreateUniversity show={showCreateUniversityModal} onHide={() => setShowCreateUniversityModal(false)} />
-            </Col>
-        </Row>
-    </Container>
-
-  );
+    const [showCreateDirectionModal, setShowCreateDirectionModal] = useState(false);
+    const [showCreateLanguageModal, setShowCreateLanguageModal] = useState(false);
+    const [showCreateUniversityModal, setShowCreateUniversityModal] = useState(false);
+    const [showCreateAdminModal, setShowCreateAdminModal] = useState(false); // state for the CreateAdmin modal
+    return (
+        <Container>
+            <Row className="mb-3">
+                <Col>
+                    <h2>Admin Panel</h2>
+                </Col>
+            </Row>
+            <Row className="mb-3">
+                <Col>
+                    <h4>Create City</h4>
+                    <Button variant="primary" onClick={() => setShowCreateCityModal(true)}>Create City</Button>
+                    <CreateCity show={showCreateCityModal} onHide={() => setShowCreateCityModal(false)} />
+                </Col>
+                <Col>
+                    <h4>Create Direction</h4>
+                    <Button variant="primary" onClick={() => setShowCreateDirectionModal(true)}>Create Direction</Button>
+                    <CreateDirection show={showCreateDirectionModal} onHide={() => setShowCreateDirectionModal(false)} />
+                </Col>
+            </Row>
+            <Row className="mb-3">
+                <Col>
+                    <h4>Create Language</h4>
+                    <Button variant="primary" onClick={() => setShowCreateLanguageModal(true)}>Create Language</Button>
+                    <CreateLanguage show={showCreateLanguageModal} onHide={() => setShowCreateLanguageModal(false)} />
+                </Col>
+            </Row>
+            <Row className="mb-3">
+                <Col>
+                    <h4>Create University</h4>
+                    <Button variant="primary" onClick={() => setShowCreateUniversityModal(true)}>Create University</Button>
+                    <CreateUniversity show={showCreateUniversityModal} onHide={() => setShowCreateUniversityModal(false)} />
+                </Col>
+            </Row>
+            <Row className="mb-3">
+                <Col>
+                    <h4>Create Admin</h4>
+                    <Button variant="primary" onClick={() => setShowCreateAdminModal(true)}>Create Admin</Button>
+                    <CreateAdmin show={showCreateAdminModal} onHide={() => setShowCreateAdminModal(false)} /> {/* CreateAdmin modal */}
+                </Col>
+            </Row>
+        </Container>
+    );
 };
 
 export default Admin;

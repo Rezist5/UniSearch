@@ -1,13 +1,15 @@
 const Subject = require('../models/Subject');
 const SubjectExam = require('../models/SubjectExam');
+const ApiError = require('../error/ApiError');
+const University = require('../models/University');
 
 class SubjectController {
   async create(req, res, next) {
     try {
-      const { name, exams } = req.body;
+      const { name, type, universityId, description } = req.body;
 
       // Создание предмета
-      const subject = await Subject.create({ name });
+      const subject = await Subject.create({ name, type, universityId, description  });
 
       return res.json(subject);
     } catch (error) {

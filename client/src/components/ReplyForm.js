@@ -2,18 +2,16 @@ import React, { useState } from 'react';
 import { Form, Button } from 'react-bootstrap';
 import { createReview } from '../http/universityAPI';
 
-const ReplyForm = ({ reviewId }) => {
+const ReplyForm = ({ parentId , universityId}) => {
   const [content, setContent] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await createReview(reviewId, { content });
-      // Успешно отправлено, можно добавить дополнительную логику, например очистку полей формы или обновление списка ответов на комментарий
+      await createReview({ content, parentId }, universityId);
       setContent('');
       alert('Ответ успешно отправлен!');
     } catch (error) {
-      // Обработка ошибок, например, вывод сообщения об ошибке
       console.error('Ошибка при отправке ответа на комментарий:', error.message);
       alert('Ошибка при отправке ответа на комментарий. Пожалуйста, попробуйте снова.');
     }

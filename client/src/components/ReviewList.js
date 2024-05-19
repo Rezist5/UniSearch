@@ -1,61 +1,51 @@
 import React, { useEffect, useState } from 'react';
 import { observer } from "mobx-react-lite";
 import { Row, Col } from "react-bootstrap";
-import ReplyItem from "./ReplyItem"; // Импортируем компонент для отображения ответов
-import { fetchReviews } from "../http/universityAPI";
+import ReplyItem from "./ReplyItem"; 
+import { fetchReviews, fetchReplies } from "../http/universityAPI";
+import ReviewItem from './ReviewItem';
 
 const ReviewList = observer(({ universityId }) => {
   const [reviews, setReviews] = useState([]);
+  const [replies, setReplies] = useState([]);
+  const [sortDirection, setSortDirection] = useState('asc');
 
   useEffect(() => {
     const getReviews = async () => {
       try {
-        const fetchedReviews = await fetchReviews(universityId);
+        const fetchedReviews = await fetchReviews(universityId, sortDirection);
         setReviews(fetchedReviews);
+        
+        const reviewIds = fetchedReviews.map(review => review.id);
+        console.log(reviewIds)
+        const fetchedReplies = await fetchReplies(reviewIds);
+        
+        setReplies(fetchedReplies);
       } catch (error) {
         console.error('Error fetching reviews:', error);
       }
     };
 
     getReviews();
-  }, [universityId]);
+  }, [universityId, sortDirection]);
 
-  // Функция для построения древовидной структуры комментариев
-  const buildTree = (reviews) => {
-    const reviewMap = new Map();
-    const rootReviews = [];
+  
+  
 
-    // Сначала создаем хэш-мап, где ключом является rootId
-    for (const review of reviews) {
-      if (!review.rootId) {
-        rootReviews.push(review);
-      } else {
-        const parent = reviewMap.get(review.rootId);
-        if (!parent.replies) {
-          parent.replies = [];
-        }
-        parent.replies.push(review);
-      }
-      reviewMap.set(review.id, review);
-    }
-
-    return rootReviews;
+  const handleSortChange = (event) => {
+    setSortDirection(event.target.value);
   };
 
   return (
-    <Row>
-      {buildTree(reviews).map(review => (
-        <Col key={review.id} md={6}>
-          {/* Отображаем комментарий */}
-          <ReplyItem key={review.id} review={review} />
-
-          {/* Отображаем ответы на комментарий (реплаи) */}
-          {review.replies && review.replies.map(reply => (
-            <ReplyItem key={reply.id} review={reply} />
-          ))}
-        </Col>
-      ))}
-    </Row>
+    <>
+      <select value={sortDirection} onChange={handleSortChange}>
+        <option value="asc">По возрастанию</option>
+        <option value="desc">По убыванию</option>
+      </select>
+      <Row>
+        {reviews.map(review => <ReviewItem key={review.id} review={review} replies={replies} />)}
+      </Row>
+    </>
   );
 });
 

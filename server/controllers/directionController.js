@@ -1,5 +1,6 @@
 const Direction = require('../models/Direction')
 const ApiError = require('../error/ApiError');
+const University = require('../models/University');
 
 class directionController {
     async create(req, res) {

@@ -5,6 +5,7 @@ const { BlacklistedToken } = require('../models/models');
 const User = require('../models/User');
 const EnrolleeInfo = require('../models/EnrolleeInfo');
 const path = require('path');
+const RepresentativeInfo = require('../models/RepresentativeInfo');
 
 
 const generateJwt = (id, email, role) => {
@@ -16,6 +17,20 @@ const generateJwt = (id, email, role) => {
 };
 
 class UserController {
+
+    async getName (req, res) {
+        try {
+            const user = await User.findByPk(req.params.id);
+            console.log(user.Fullname)
+            if (!user) {
+                return res.status(404).json({ message: 'Пользователь не найден' });
+            }
+
+            return res.json(user.Fullname);
+        } catch (err) {
+            return res.status(500).json({ message: err.message });
+        }
+    }
     async registration(req, res, next) {
         const { email, password, Fullname, grade, age} = req.body;
         if (!email || !password) {
@@ -35,7 +50,7 @@ class UserController {
     async createAdmin(req, res, next) {
         try {
             const { email, password, Fullname } = req.body;
-            console.log(req.body)
+            console.log(email, password, Fullname )
             if (!email || !password || !Fullname) {
                 return next(ApiError.badRequest('Некорректные данные'));
             }
@@ -58,29 +73,30 @@ class UserController {
     async createRepresentative(req, res, next) {
         try {
             const { email, password, fullName, universityId } = req.body;
-
+            
             if (!email || !password || !fullName || !universityId) {
                 return next(ApiError.badRequest('Некорректные данные'));
             }
 
             const hashPassword = await bcrypt.hash(password, 10);
-
+            console.log(hashPassword)
             const representative = await User.create({
                 email,
                 password: hashPassword,
-                fullName,
+                Fullname : fullName,
                 role: 'REPRESENTATIVE' 
             });
 
             await RepresentativeInfo.create({
-                universityId,
-                userId: representative.id
+                UniversityId : universityId,
+                UserId: representative.id
             });
-
             return res.json({ message: 'Представитель успешно создан', representative });
         } catch (error) {
+            console.error(error);
             next(error);
         }
+        
     }
     async uploadAvatar(req, res, next) {
         try {
@@ -117,12 +133,14 @@ class UserController {
 
     async getRepresentativeInfo(req, res, next){
         try {
-            const { id } = req.id;
+            const { id } = req.params;
+
             const representativeInfo = await RepresentativeInfo.findOne({
-                where: { userId: id }
+                where: { UserId: id }
             });
+            
             if (representativeInfo) {
-                return representativeInfo;
+                return res.json(representativeInfo);
             } else {
                 return next(ApiError.internal('Данные не найдены'));
             }

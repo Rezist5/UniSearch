@@ -23,7 +23,7 @@ const CountryBar = observer(() => {
             />
 
             {/* Полоса с возможностью прокрутки */}
-            <div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
+            <div style={{ overflowX: 'auto',  whiteSpace: 'nowrap', maxWidth: '600px', maxHeight: '400px' , border: '1px solid #ccc' }}>
                 <Row className="d-flex">
                     {filteredCountries.map(country => {
                         if (!country || typeof country !== 'object' || !('id' in country)) return null; // Проверка на существование country и его свойства id
@@ -42,6 +42,7 @@ const CountryBar = observer(() => {
                     })}
                 </Row>
             </div>
+
         </div>
     );
 });

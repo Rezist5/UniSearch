@@ -10,7 +10,7 @@ const UniversityList = observer(() => {
     console.log(university.universities)
     return (
         <Row className="d-flex">
-            {university.universities.rows.map(university =>
+            {university.universities.rows?.map(university =>
                 <UniversityItem key={university.id} university={university}/>
             )}
         </Row>

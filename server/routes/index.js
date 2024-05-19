@@ -11,6 +11,8 @@ const subjectRouter = require('./subjectRouter')
 const portfolioRouter = require('./portfolioRouter')
 const cityRouter = require('./cityRouter')
 const countryRouter = require('./countryRouter')
+const scholarshipRouter = require('./scholarshipRouter')
+const requestRouter = require('./requestRouter')
 
 
 
@@ -26,6 +28,11 @@ router.use('/subject', subjectRouter)
 router.use('/city', cityRouter)
 router.use('/portfolio', portfolioRouter)
 router.use('/country', countryRouter)
+router.use('/scholarship', scholarshipRouter)
+router.use('/request', requestRouter)
+
+
+
 
 
 

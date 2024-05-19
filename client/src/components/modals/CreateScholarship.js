@@ -7,9 +7,10 @@ const CreateScholarship = ({ show, onHide, university }) => {
     const [name, setName] = useState('');
     const [requirements, setRequirements] = useState('');
     const [value, setValue] = useState('');
-    const univresityId = university.id;
+    const universityId = university.id;
+    
     const addScholarship = () => {
-        createScholarship({ name, requirements, value , univresityId }).then(data => {
+        createScholarship({ name, requirements, value , universityId }).then(data => {
             setName('');
             setRequirements('');
             setValue('');

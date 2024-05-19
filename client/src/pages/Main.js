@@ -6,6 +6,7 @@ import DirectionBar from "../components/DirectionBar";
 import CountryBar from "../components/CountryBar";
 import SubjectBar from "../components/SubjectBar";
 import SortBar from '../components/SortBar';
+import '../App.css';
 
 import UniversityList from "../components/UniversityList";
 import {observer} from "mobx-react-lite";
@@ -15,7 +16,7 @@ import Pages from "../components/Pages";
 
 const Main = observer(() => {
     const {university} = useContext(Context)
-    console.log("Main");
+    
 
     useEffect(() => {
         fetchCountries().then(data => university.setCountries(data))
@@ -52,10 +53,10 @@ const Main = observer(() => {
                 <Col md={3}>
                     <DirectionBar/>
                     <SortBar/>
+                    <CountryBar />
                 </Col>
                 <Col md={9}>
-                    <SubjectBar/>
-                    <CountryBar/>
+                    
                     <UniversityList/>
                     <Pages/>
                 </Col>

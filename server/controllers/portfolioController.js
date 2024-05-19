@@ -4,40 +4,38 @@ const ApiError = require('../error/ApiError');
 class PortfolioController {
     async create(req, res, next) {
         try {
-            const { id: userId } = req.userData;
+            const { enrolleeId } = req.body; // Изменено с userId на enrolleeId
             const { name, description } = req.body;
-            let image = '';
+            const image = req.files.image;
 
-            if (req.file) {
-                const tempPath = req.file.path;
-                const targetPath = path.join(__dirname, '..', 'static/portfolios', req.file.filename + path.extname(req.file.originalname).toLowerCase());
-                fs.renameSync(tempPath, targetPath); // Перемещаем файл в папку uploads
-
-                image = targetPath; // Сохраняем путь к изображению в базе данных
-            }
-
-            const portfolio = await Portfolio.create({ userId, name, description, image });
+            const newFileName = `${Date.now()}-${image.name}`;
+            image.mv(`./static/portfolios/${newFileName}`);
+            
+            const portfolio = await Portfolio.create({ userId: enrolleeId, name, description, image: `static/portfolios/${newFileName}` }); // Изменено с userId на enrolleeId
             return res.json(portfolio);
         } catch (error) {
             next(ApiError.badRequest(error.message));
         }
     }
+    
+    
 
-    async getAll(req, res, next) {
+    async getAllByEnrolleeId(req, res, next) {
         try {
-            const { id: userId } = req.userData; // Получаем идентификатор текущего пользователя из данных аутентификации
-            const portfolios = await Portfolio.findAll({ where: { userId } }); // Получаем только портфолио текущего пользователя
-            return res.json(portfolios);
+            const { enrolleeId } = req.params; // Получаем enrolleeId из параметров запроса
+            console.log(enrolleeId)
+            const portfolios = await Portfolio.findAll({ where: { userId: enrolleeId } }); // Ищем все портфолио с данным enrolleeId
+            return res.json(portfolios); // Возвращаем найденные портфолио
         } catch (error) {
-            next(ApiError.internal(error.message));
+            next(ApiError.badRequest(error.message));
         }
     }
 
     async getById(req, res, next) {
         try {
-            const { id } = req.params;
-            const { id: userId } = req.userData; // Получаем идентификатор текущего пользователя из данных аутентификации
-            const portfolio = await Portfolio.findOne({ where: { id, userId } }); // Получаем портфолио текущего пользователя по id
+            const { id } = req.body;
+            console.log()
+            const portfolio = await Portfolio.findOne({ where: { userId } }); 
             if (!portfolio) {
                 return next(ApiError.notFound('Portfolio not found'));
             }

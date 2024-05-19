@@ -23,23 +23,31 @@ export const check = async () => {
 
 export const getRepresentativeInfo = async (id) => {
     const {data} = await $authHost.get(`api/user/representative/${id}` )
-    return jwtDecode(data)
+    console.log(data)
+    return data
 }
 
-export const createAdmin = async (email, password) => {
-    const {data} = await $authHost.post('api/user/createAdmin' , {email, password, role: 'ADMIN'})//DODELAT
+export const createAdmin = async (email, password, Fullname) => {
+    
+    const {data} = await $authHost.post('api/user/createAdmin' , {email, password, Fullname , role: 'ADMIN'})//DODELAT
     localStorage.setItem('token', data.token)
-    return jwtDecode(data.token)
+    return data
 }
 
-export const createRepresentative = async (email, password) => {
-    const {data} = await $authHost.post('api/user/createRepresentative', {email, password, role: 'REPRESENTATIVE'} )//DODELAT
+export const createRepresentative = async (email, password, fullName, universityId) => {
+    const {data} = await $authHost.post('api/user/createRepresentative', {email, password, fullName, universityId, role: 'REPRESENTATIVE'} )
     localStorage.setItem('token', data.token)
-    return jwtDecode(data.token)
+    return data
 }
 
 export const logout = async () => {
     const {data} = await $authHost.post('api/user/logout')
     localStorage.setItem('token', data.token)
     return jwtDecode(data.token)
+}
+
+export const findNameByReview = async (id) => {
+    const {data} = await $authHost.get(`api/user/${id}`)
+    console.log(data)
+    return data
 }

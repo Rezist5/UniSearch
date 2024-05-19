@@ -1,17 +1,20 @@
 import {$authHost, $host} from "./index";
 
-export const createPortfolio = async (portfolio) => {
-    const {data} = await $authHost.post('api/portfolio', portfolio)
-    return data
-}
+export const createPortfolio = async (formData) => {
+    console.log(formData)
+    const {data} = await $authHost.post('api/portfolio', formData)
+    return data;
+};
+
+
 
 export const fetchPortfolios = async () => {
     const {data} = await $host.get('api/portfolio')
     return data
 }
 
-export const fetchOnePortfolio = async (id) => {
-    const {data} = await $host.get(`api/portfolio/${id}`)
+export const fetchPortfolioByEnrolleeId = async (enrolleeId) => {
+    const {data} = await $host.get(`api/portfolio/${enrolleeId}`)
     return data
 }
 
